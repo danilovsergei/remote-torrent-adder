@@ -1,4 +1,4 @@
-# remote-_-adder
+# Description
 A fork of [Remote Torrent Adder](https://github.com/bogenpirat/remote-torrent-adder)
 
 Chrome started blocking [Remote Torrent Adder](https://github.com/bogenpirat/remote-torrent-adder) because it's using too wide permissions in the manifest
