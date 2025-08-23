@@ -3,7 +3,7 @@ A fork of [Remote Torrent Adder](https://github.com/bogenpirat/remote-torrent-ad
 
 Chrome started blocking [Remote Torrent Adder](https://github.com/bogenpirat/remote-torrent-adder) because it's using too wide permissions in the manifest and v2 manifest is deprecated.
 
-# Main changes:
+# Main changes
 * Migrated to the chrome v3 manifest
 * Dynamically requests permissions to the sites when user clicks to add torrent.
 * There is also a button "Request Permission" in the settings next to torrent service. Click it to grant permission to access torrent service URL
