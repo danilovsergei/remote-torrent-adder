@@ -1,23 +1,23 @@
-$(document).ready(function(){
+$(document).ready(function () {
 	var tabCounter = 1;
-	
+
 	registerGeneralSettingsEvents();
 
 	loadGeneralSettings();
-	
-	$(function() {
+
+	$(function () {
 		$("#configtabs").tabs();
 	});
 
 	// new server type selection dialog // tab adding stuff
-	$(function() {
+	$(function () {
 		var tabTitle = $("#tab_title");
 		var tabClient = $("#tab_client");
 		var tabTemplate = "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close' role='presentation'>Remove Tab</span></li>";
 		var tabs = $("#serverstabs").tabs();
 
 		tabs.find(".ui-tabs-nav").sortable({
-			stop: function() {
+			stop: function () {
 				tabs.tabs("refresh");
 				saveServersSettings();
 			}
@@ -27,22 +27,22 @@ $(document).ready(function(){
 			autoOpen: false,
 			modal: true,
 			buttons: {
-				Add: function() {
-					if(addTab(tabTitle.val())) {
+				Add: function () {
+					if (addTab(tabTitle.val())) {
 						$(this).dialog("close");
 					}
 				},
-				Cancel: function() {
+				Cancel: function () {
 					$(this).dialog("close");
 				}
 			},
-			close: function() {
+			close: function () {
 				form[0].reset();
 			}
 		});
-		
-		var form = dialog.find("form").submit(function() {
-			if(addTab(tabTitle.val())) {
+
+		var form = dialog.find("form").submit(function () {
+			if (addTab(tabTitle.val())) {
 				dialog.dialog("close");
 			}
 			return false;
@@ -51,9 +51,9 @@ $(document).ready(function(){
 		function addTab(name, client, oldload) {
 			// some input validation
 			var servers = JSON.parse(localStorage.getItem("servers"))
-			if(oldload !== true) {
-				for(var x in servers) {
-					if(servers[x].name == name || name === null || name === "") {
+			if (oldload !== true) {
+				for (var x in servers) {
+					if (servers[x].name == name || name === null || name === "") {
 						alert("This name is already in use by another server, or invalid.");
 						return false;
 					}
@@ -67,34 +67,69 @@ $(document).ready(function(){
 			tabs.find(".ui-tabs-nav").append(li);
 			tabs.append("<div id='" + id + "'><p>" + tabContentHtml + "</p></div>");
 			tabs.tabs("refresh");
-			if(oldload !== true) {
+			if (oldload !== true) {
 				tabs.tabs("option", "active", -1);
 			} else {
 				tabs.tabs("option", "active", 0);
 			}
 			tabCounter++;
 
-			$("input, select").bind("change keyup", function(event) {
+			$("input, select").bind("change keyup", function (event) {
 				saveServersSettings();
+			});
+
+			$("button[name=requestpermission]").click(function () {
+				var server = {};
+				var elements = $(this).parents("div[id^=servertabs-]").find("input, select").get();
+				for (var u in elements) {
+					var element = elements[u];
+
+					switch (element.type) {
+						case "checkbox":
+							server[element.name] = $(element).prop('checked');
+							break;
+						case "select-multiple":
+							server[element.name] = JSON.stringify(Array.prototype.map.call(element.options, function (x) { return x.value }));
+							break;
+						default:
+							server[element.name] = $(element).val();
+					}
+				}
+
+				if (server.host && server.port) {
+					var scheme = server.hostsecure ? "https://" : "http://";
+					// The permission needs a wildcard at the end of the path.
+					var nasAddress = scheme + server.host + ":" + server.port + "/*";
+
+					chrome.permissions.request({
+						origins: [nasAddress]
+					}, function (granted) {
+						if (granted) {
+							console.log("Permission was granted for: " + nasAddress);
+						} else {
+							console.log("Permission was denied for: " + nasAddress);
+						}
+					});
+				}
 			});
 
 			return true;
 		}
 
 
-		$("#add_tab").button().click(function() {
+		$("#add_tab").button().click(function () {
 			dialog.dialog("open");
 		});
 
 		// close icon: removing the tab on click
-		tabs.delegate("span.ui-icon-close", "click", function() {
+		tabs.delegate("span.ui-icon-close", "click", function () {
 			var panelId = $(this).closest("li").remove().attr("aria-controls");
 			$("#" + panelId).remove();
 			tabs.tabs("refresh");
 			saveServersSettings();
 		});
 
-		tabs.bind("keyup", function(event) {
+		tabs.bind("keyup", function (event) {
 			if (event.altKey && event.keyCode === $.ui.keyCode.BACKSPACE) {
 				var panelId = tabs.find(".ui-tabs-active").remove().attr("aria-controls");
 				$("#" + panelId).remove();
@@ -106,22 +141,22 @@ $(document).ready(function(){
 
 		// load server configs
 		var servers = JSON.parse(localStorage.getItem("servers"));
-		for(var i in servers) {
+		for (var i in servers) {
 			var server = servers[i];
 
 			addTab(server.name, server.client, true);
 
 			var mySettingInputs = $("#servertabs-" + (parseInt(i) + 1)).find("input, select").get();
-			for(var u in mySettingInputs) {
+			for (var u in mySettingInputs) {
 				var mySettingInput = mySettingInputs[u];
-				if(server.hasOwnProperty(mySettingInput.name)) {
-					switch(mySettingInput.type) {
+				if (server.hasOwnProperty(mySettingInput.name)) {
+					switch (mySettingInput.type) {
 						case "checkbox":
 							$(mySettingInput).prop('checked', server[mySettingInput.name]);
 							break;
 						case "select-multiple":
 							var optionlist = JSON.parse(server[mySettingInput.name]);
-							for(var k in optionlist) {
+							for (var k in optionlist) {
 								$(mySettingInput).append($("<option>", {
 									text: optionlist[k]
 								}));
@@ -131,69 +166,69 @@ $(document).ready(function(){
 							$(mySettingInput).val(server[mySettingInput.name]);
 					}
 				}
-				
-				if(mySettingInput.type == "select-multiple") {
-					switch(mySettingInput.name) {
+
+				if (mySettingInput.type == "select-multiple") {
+					switch (mySettingInput.name) {
 						case "dirlist":
 							var thisTd = $(mySettingInput).parents("td");
-							thisTd.find("button[name=adddirbutton]").click(function() {
+							thisTd.find("button[name=adddirbutton]").click(function () {
 								var answer = prompt("Enter a new directory");
-								if(answer !== null) {
+								if (answer !== null) {
 									$(this).parents("td").find("select[name=dirlist]").append($("<option>", {
 										text: answer
 									}));
 									saveServersSettings();
 								}
 							});
-							thisTd.find("button[name=deldirbutton]").click(function() {
+							thisTd.find("button[name=deldirbutton]").click(function () {
 								$(this).parents("td").find("select[name=dirlist] option:selected").remove();
 								saveServersSettings();
 							});
 							break;
 						case "labellist":
 							var thisTd = $(mySettingInput).parents("td");
-							thisTd.find("button[name=addlabelbutton]").click(function() {
+							thisTd.find("button[name=addlabelbutton]").click(function () {
 								var answer = prompt("Enter a new label");
-								if(answer !== null) {
+								if (answer !== null) {
 									$(this).parents("td").find("select[name=labellist]").append($("<option>", {
 										text: answer
 									}));
 									saveServersSettings();
 								}
 							});
-							thisTd.find("button[name=dellabelbutton]").click(function() {
+							thisTd.find("button[name=dellabelbutton]").click(function () {
 								$(this).parents("td").find("select[name=labellist] option:selected").remove();
 								saveServersSettings();
 							});
 							break;
 						case "autolabellist":
 							var thisTd = $(mySettingInput).parents("td");
-							thisTd.find("button[name=addautolabelbutton]").click(function() {
+							thisTd.find("button[name=addautolabelbutton]").click(function () {
 								var answer = prompt("Enter a new tracker url / label combination like this:\nSOMETRACKER.COM,SOMELABEL");
-								if(answer !== null) {
+								if (answer !== null) {
 									$(this).parents("td").find("select[name=autolabellist]").append($("<option>", {
 										text: answer
 									}));
 									saveServersSettings();
 								}
 							});
-							thisTd.find("button[name=delautolabelbutton]").click(function() {
+							thisTd.find("button[name=delautolabelbutton]").click(function () {
 								$(this).parents("td").find("select[name=autolabellist] option:selected").remove();
 								saveServersSettings();
 							});
 							break;
 						case "autodirlist":
 							var thisTd = $(mySettingInput).parents("td");
-							thisTd.find("button[name=addautodirbutton]").click(function() {
+							thisTd.find("button[name=addautodirbutton]").click(function () {
 								var answer = prompt("Enter a new tracker url / directory combination like this:\nSOMETRACKER.COM,SOMEDIRECTORY");
-								if(answer !== null) {
+								if (answer !== null) {
 									$(this).parents("td").find("select[name=autodirlist]").append($("<option>", {
 										text: answer
 									}));
 									saveServersSettings();
 								}
 							});
-							thisTd.find("button[name=delautodirbutton]").click(function() {
+							thisTd.find("button[name=delautodirbutton]").click(function () {
 								$(this).parents("td").find("select[name=autodirlist] option:selected").remove();
 								saveServersSettings();
 							});
@@ -213,7 +248,7 @@ function loadGeneralSettings() {
 
 	// load matches
 	loadMatches();
-	
+
 	// set visibility
 	flipVisibility("showpopups", "popupduration");
 	flipVisibility("catchfrompage", "linkmatches");
@@ -228,18 +263,18 @@ function setSetting(e, val) {
 }
 
 function getSetting(e) {
-	if(e.type == "text" || e.type == "password") {
+	if (e.type == "text" || e.type == "password") {
 		document.getElementById(e.id).value = (localStorage[e.id] == undefined) ? "" : localStorage[e.id];
-	} else if(e.type == "checkbox") {
+	} else if (e.type == "checkbox") {
 		document.getElementById(e.id).checked = (localStorage[e.id] == "true") ? true : false;
 	}
 }
 
 function saveMatches() {
 	var opts = document.getElementById("linkmatches").getElementsByTagName("option");
-	var destStr = ""; var i=0;
-	for(key in opts)
-		if(opts[key].text) {
+	var destStr = ""; var i = 0;
+	for (key in opts)
+		if (opts[key].text) {
 			var sep = (i++ == 0) ? "" : "~";
 			destStr += sep + opts[key].text;
 		}
@@ -251,8 +286,8 @@ function loadMatches() {
 	newSelEl.setAttribute("id", "linkmatches");
 	newSelEl.setAttribute("multiple", "multiple");
 	newSelEl.setAttribute("size", "5");
-	if(localStorage["linkmatches"] != "")
-		for(key in localStorage["linkmatches"].split("~")) {
+	if (localStorage["linkmatches"] != "")
+		for (key in localStorage["linkmatches"].split("~")) {
 			var newEl = document.createElement("option");
 			newEl.text = localStorage["linkmatches"].split("~")[key];
 			newSelEl.appendChild(newEl);
@@ -263,9 +298,9 @@ function loadMatches() {
 }
 
 function addMatch() {
-	var newMatch = prompt("Enter a partial string of a link that should be caught by the extension","");
-	if(!newMatch) return;
-	
+	var newMatch = prompt("Enter a partial string of a link that should be caught by the extension", "");
+	if (!newMatch) return;
+
 	var newOpt = new Option(newMatch);
 	document.getElementById('linkmatches').appendChild(newOpt);
 	saveMatches();
@@ -273,77 +308,77 @@ function addMatch() {
 
 function deleteMatches() {
 	var list = document.getElementById('linkmatches');
-	for(var i = list.length-1; i>=0; i--)
-		if(list.options[i].selected) {
+	for (var i = list.length - 1; i >= 0; i--)
+		if (list.options[i].selected) {
 			list.removeChild(list.options[i]);
 		}
 	saveMatches();
 }
 
-Storage.prototype.setObject = function(key, val) {
+Storage.prototype.setObject = function (key, val) {
 	this.setItem(key, JSON.stringify(val));
 }
-Storage.prototype.getObject = function(key) {
+Storage.prototype.getObject = function (key) {
 	var value = this.getItem(key);
-    return value && JSON.parse(value);
+	return value && JSON.parse(value);
 }
 
 function registerGeneralSettingsEvents() {
-	document.querySelector("#linksfoundindicator").onchange = function() {
+	document.querySelector("#linksfoundindicator").onchange = function () {
 		setSetting(this, (this.checked) ? 'true' : 'false');
 	};
-	
-	document.querySelector("#showpopups").onchange = function() {
+
+	document.querySelector("#showpopups").onchange = function () {
 		setSetting(this, (this.checked) ? 'true' : 'false');
 	};
-	document.querySelector("#showpopups").onclick = function() {
+	document.querySelector("#showpopups").onclick = function () {
 		flipVisibility(this.id, 'popupduration');
 	};
 
-	document.querySelector("#hearpopups").onchange = function() {
+	document.querySelector("#hearpopups").onchange = function () {
 		setSetting(this, (this.checked) ? 'true' : 'false');
 	};
-	
-	document.querySelector("#popupduration").onkeyup = function() {
+
+	document.querySelector("#popupduration").onkeyup = function () {
 		setSetting(this, this.value);
 	};
-	
-	document.querySelector("#notificationtest").onclick = function() {
-		RTA.displayResponse("This is a test notification","This is a test message!",false)
+
+	document.querySelector("#notificationtest").onclick = function () {
+		RTA.displayResponse("This is a test notification", "This is a test message!", false)
 	};
-	
-	document.querySelector("#catchfromcontextmenu").onchange = function() {
+
+	document.querySelector("#catchfromcontextmenu").onchange = function () {
 		setSetting(this, (this.checked) ? 'true' : 'false');
 	};
-	
-	document.querySelector("#catchfrompage").onchange = function() {
+
+	document.querySelector("#catchfrompage").onchange = function () {
 		setSetting(this, (this.checked) ? 'true' : 'false');
 	};
-	document.querySelector("#catchfrompage").onclick = function() {
+	document.querySelector("#catchfrompage").onclick = function () {
 		flipVisibility(this.id, 'linkmatches');
 	};
-	
-	document.querySelector("#catchfromnewtab").onchange = function() {
+
+	document.querySelector("#catchfromnewtab").onchange = function () {
 		setSetting(this, (this.checked) ? 'true' : 'false');
 	};
-	
-	document.querySelector("#addfilterbtn").onclick = function() {
+
+	document.querySelector("#addfilterbtn").onclick = function () {
 		addMatch();
 	};
-	
-	document.querySelector("#delfilterbtn").onclick = function() {
+
+	document.querySelector("#delfilterbtn").onclick = function () {
 		deleteMatches();
 	};
-	
-	document.querySelector("#showfiltersbtn").onclick = function() {
+
+	document.querySelector("#showfiltersbtn").onclick = function () {
 		alert(localStorage['linkmatches']);
 	};
 
-	document.querySelector("#registerDelay").onkeyup = function() {
+	document.querySelector("#registerDelay").onkeyup = function () {
 		setSetting(this, this.value);
 	};
 
-	document.querySelector("#createBackupButton").onclick = function() {
+	document.querySelector("#createBackupButton").onclick = function () {
 		const text = JSON.stringify(localStorage);
 
 		var el = document.createElement("a");
@@ -355,25 +390,25 @@ function registerGeneralSettingsEvents() {
 		document.body.removeChild(el);
 	};
 
-	document.querySelector("#importBackupSelector").onchange = function() {
+	document.querySelector("#importBackupSelector").onchange = function () {
 		if (this.files.length === 0) {
 			return;
 		} else {
 			const reader = new FileReader();
-			reader.onload = function() {
+			reader.onload = function () {
 				const resultField = document.querySelector("#importResultField");
 				try {
 					const settings = JSON.parse(reader.result);
 
-					for(const key in settings) {
+					for (const key in settings) {
 						localStorage.setItem(key, settings[key]);
 					}
 
 					resultField.innerHTML = "Result: &#x2714; Settings imported";
-				} catch(ex) {
+				} catch (ex) {
 					resultField.innerHTML = "Result: &#x274C; Couldn't parse the input file.";
 				}
-				
+
 			};
 			reader.readAsText(this.files[0]);
 		}
@@ -383,24 +418,24 @@ function registerGeneralSettingsEvents() {
 function saveServersSettings() {
 	var order = {};
 	var links = $("a[href^=#servertabs-]").get();
-	for(var i in links) {
+	for (var i in links) {
 		order[links[i].href.split('#')[1]] = i;
 	}
 
 	var servers = [];
-	$("div[id^=servertabs-]").each(function(i, el) {
+	$("div[id^=servertabs-]").each(function (i, el) {
 		var thisId = $(el).prop("id");
 		var server = {};
 		var elements = $(el).find("input, select").get();
-		for(var u in elements) {
+		for (var u in elements) {
 			var element = elements[u];
 
-			switch(element.type) {
+			switch (element.type) {
 				case "checkbox":
 					server[element.name] = $(element).prop('checked');
 					break;
 				case "select-multiple":
-					server[element.name] = JSON.stringify(Array.prototype.map.call(element.options, function(x) { return x.value }));
+					server[element.name] = JSON.stringify(Array.prototype.map.call(element.options, function (x) { return x.value }));
 					break;
 				default:
 					server[element.name] = $(element).val();
@@ -411,11 +446,11 @@ function saveServersSettings() {
 
 	localStorage.setItem("servers", JSON.stringify(servers))
 
-	chrome.extension.sendRequest({"action": "constructContextMenu"});
-	
-	chrome.extension.sendRequest({"action": "registerRefererListeners"});
-	
-	chrome.extension.sendRequest({"action": "registerAuthenticationListeners"});
-	
+	chrome.extension.sendRequest({ "action": "constructContextMenu" });
+
+	chrome.extension.sendRequest({ "action": "registerRefererListeners" });
+
+	chrome.extension.sendRequest({ "action": "registerAuthenticationListeners" });
+
 	return servers;
 }

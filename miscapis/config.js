@@ -1,28 +1,28 @@
-RTA.clients.config.getConfig = function(client, name) {
+RTA.clients.config.getConfig = function (client, name) {
 	var clientMap = {
-		"ruTorrent WebUI" : RTA.clients.config.rutorrent,
-		"Transmission WebUI" : RTA.clients.config.transmission,
-		"Torrentflux WebUI" : RTA.clients.config.torrentflux,
-		"uTorrent WebUI" : RTA.clients.config.utorrent,
-		"Deluge WebUI" : RTA.clients.config.deluge,
-		"Hadouken WebUI" : RTA.clients.config.hadouken,
-		"flood WebUI" : RTA.clients.config.flood,
-		"flood-jesec WebUI" : RTA.clients.config.floodJesec,
-		"QNAP DownloadStation" : RTA.clients.config.qnap,
-		"qBittorrent WebUI" : RTA.clients.config.qbittorrent,
-		"qBittorrent v4.1+ WebUI" : RTA.clients.config.qbittorrentv2,
-		"rTorrent XML-RPC" : RTA.clients.config.rtorrentxmlrpc
+		"ruTorrent WebUI": RTA.clients.config.rutorrent,
+		"Transmission WebUI": RTA.clients.config.transmission,
+		"Torrentflux WebUI": RTA.clients.config.torrentflux,
+		"uTorrent WebUI": RTA.clients.config.utorrent,
+		"Deluge WebUI": RTA.clients.config.deluge,
+		"Hadouken WebUI": RTA.clients.config.hadouken,
+		"flood WebUI": RTA.clients.config.flood,
+		"flood-jesec WebUI": RTA.clients.config.floodJesec,
+		"QNAP DownloadStation": RTA.clients.config.qnap,
+		"qBittorrent WebUI": RTA.clients.config.qbittorrent,
+		"qBittorrent v4.1+ WebUI": RTA.clients.config.qbittorrentv2,
+		"rTorrent XML-RPC": RTA.clients.config.rtorrentxmlrpc
 	};
-	
+
 	var config = "<table>" + RTA.clients.config.generalsettings.replace(/\{clienttype\}/g, client).replace(/\{name\}/g, name);
 
-	if(clientMap.hasOwnProperty(client))
+	if (clientMap.hasOwnProperty(client))
 		config += clientMap[client];
 
 	return config;
 };
 
-RTA.clients.config.generalsettings = multiline(function(){/*
+RTA.clients.config.generalsettings = multiline(function () {/*
 			<tbody>
 				<tr>
 					<td><span class="title">Name</span></td>
@@ -34,7 +34,7 @@ RTA.clients.config.generalsettings = multiline(function(){/*
 				</tr>
 				<tr>
 					<td><span class="title">Host</span></td>
-					<td><input type="text" name="host" /><br />
+					<td><input type="text" name="host" /><button name="requestpermission">Request Permission</button><br />
 						<span class="tip">The ip/hostname to connect to</span></td>
 				</tr>
 				<tr>
@@ -62,7 +62,7 @@ RTA.clients.config.generalsettings = multiline(function(){/*
 
 
 
-RTA.clients.config.deluge = multiline(function(){/*
+RTA.clients.config.deluge = multiline(function () {/*
 			<tbody name="delugewebuispecifics" class="specifics">
 				<tr>
 					<td><span class="title">Relative path</span><br />(optional)</td>
@@ -73,7 +73,7 @@ RTA.clients.config.deluge = multiline(function(){/*
 			</tbody>
 			*/});
 
-RTA.clients.config.rutorrent = multiline(function(){/*
+RTA.clients.config.rutorrent = multiline(function () {/*
 			<tbody name="rutorrentspecifics" class="specifics">
 				<tr>
 					<td><span class="title">Relative path</span></td>
@@ -151,7 +151,7 @@ RTA.clients.config.rutorrent = multiline(function(){/*
 			</tbody>
 			*/});
 
-RTA.clients.config.transmission = multiline(function(){/*
+RTA.clients.config.transmission = multiline(function () {/*
 			<tbody name="transmissionwebuispecifics" class="specifics">
 				<tr>
 					<td><span class="title">Path</span><br />(optional)</td>
@@ -160,7 +160,7 @@ RTA.clients.config.transmission = multiline(function(){/*
 			</tbody>
 			*/});
 
-RTA.clients.config.torrentflux = multiline(function(){/*
+RTA.clients.config.torrentflux = multiline(function () {/*
 			<tbody name="torrentfluxspecifics" class="specifics">
 				<tr>
 					<td><span class="title">Relative path</span></td>
@@ -171,7 +171,7 @@ RTA.clients.config.torrentflux = multiline(function(){/*
 			</tbody>
 			*/});
 
-RTA.clients.config.utorrent = multiline(function(){/*
+RTA.clients.config.utorrent = multiline(function () {/*
 			<tbody name="utorrentspecifics" class="specifics">
 				<tr>
 					<td><span class="title">Relative path</span><br />(optional)</td>
@@ -182,7 +182,7 @@ RTA.clients.config.utorrent = multiline(function(){/*
 			</tbody>
 			*/});
 
-RTA.clients.config.hadouken = multiline(function(){/*
+RTA.clients.config.hadouken = multiline(function () {/*
 			<tbody name="hadoukenspecifics" class="specifics">
 				<tr>
 					<td><span class="title">Label</span><br />(optional)</td>
@@ -197,7 +197,7 @@ RTA.clients.config.hadouken = multiline(function(){/*
 			</tbody>
 			*/});
 
-RTA.clients.config.rtorrentxmlrpc = multiline(function(){/*
+RTA.clients.config.rtorrentxmlrpc = multiline(function () {/*
 			<tbody name="rtorrentxmlrpcspecifics" class="specifics">
 				<tr>
 					<td><span class="title">Relative path</span><br />(optional)</td>
@@ -211,7 +211,7 @@ RTA.clients.config.rtorrentxmlrpc = multiline(function(){/*
 			</tbody>
 			*/});
 
-RTA.clients.config.flood = multiline(function(){/*
+RTA.clients.config.flood = multiline(function () {/*
 			<tbody name="floodspecifics" class="specifics">
 				<tr>
 					<td><span class="title">Directory</span><br />(optional)</td>
@@ -225,7 +225,7 @@ RTA.clients.config.flood = multiline(function(){/*
 			</tbody>
 			*/});
 
-RTA.clients.config.floodJesec = multiline(function(){/*
+RTA.clients.config.floodJesec = multiline(function () {/*
 			<tbody name="floodJesecspecifics" class="specifics">
 				<tr>
 					<td><span class="title">Directory</span><br />(optional)</td>
@@ -239,7 +239,7 @@ RTA.clients.config.floodJesec = multiline(function(){/*
 			</tbody>
 			*/});
 
-RTA.clients.config.qnap = multiline(function(){/*
+RTA.clients.config.qnap = multiline(function () {/*
 			<tbody name="qnapspecifics" class="specifics">
 				<tr>
 					<td><span class="title">Temp Directory</span><br /></td>
@@ -254,7 +254,7 @@ RTA.clients.config.qnap = multiline(function(){/*
 			</tbody>
 			*/});
 
-RTA.clients.config.qbittorrent = multiline(function(){/*
+RTA.clients.config.qbittorrent = multiline(function () {/*
 			<tbody name="qbittorrentspecifics" class="specifics">
 				<tr>
 					<td><span class="title">Label/Directory<br/>interactivity</span></td>
@@ -264,7 +264,7 @@ RTA.clients.config.qbittorrent = multiline(function(){/*
 			</tbody>
 			*/});
 
-RTA.clients.config.qbittorrentv2 = multiline(function(){/*
+RTA.clients.config.qbittorrentv2 = multiline(function () {/*
 			<tbody name="qbittorrentv2specifics" class="specifics">
 				<tr>
 					<td><span class="title">Label/Directory<br/>interactivity</span></td>
@@ -273,4 +273,3 @@ RTA.clients.config.qbittorrentv2 = multiline(function(){/*
 				</tr>
 			</tbody>
 			*/});
-

@@ -12,12 +12,14 @@
 	"description": "Add torrents using several programs' WebUIs",
 	"permissions": [
 		"https://nnmclub.to/*",
-		"http://127.0.0.1/*",
 		"contextMenus",
 		"notifications",
 		"tabs",
 		"webRequest",
 		"webRequestBlocking"
+	],
+	"optional_permissions": [
+		"*://*/*"
 	],
 	"background": {
 		"scripts": [
