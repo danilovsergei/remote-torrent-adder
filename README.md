@@ -1,29 +1,8 @@
 # remote-_-adder
-A handy Chrome extension to add _ files to _ clients.
+A fork of [Remote Torrent Adder](https://github.com/bogenpirat/remote-torrent-adder)
 
-## What is this about?
-The Chrome Web Browser - albeit an excellent browsing tool - does not permit its extensions a lot of access into its functionality. Hence, an extension that would download a ._ file and automatically open it in the user's BitTorrent client locally can't be easily implemented. *Remote Torrent Adder* utilizes the WebUIs of modern BitTorrent clients to implement the functionality required for this scenario - and it works locally as well as for BitTorrent clients on other machines!
+Chrome started blocking [Remote Torrent Adder](https://github.com/bogenpirat/remote-torrent-adder) because it's using too wide permissions in the manifest
 
-It supports the following BitTorrent clients:
-  * Bigly/Vuze (through plugins: Vuze Remote, SwingUI, HTML WebUI)
-  * uTorrent (including uTorrent Server, uTorrent for Mac and newer Buffalo Linkstations)
-  * Transmission
-  * Deluge
-  * qBit_
-  * r_ (ruTorrent, pyrt, NodeJS-rTorrent, flood(&-jesec), direct XMLRPC interface)
-  * Torrentflux
-  * Buffalo built-in _ client
-  * Tixati
-  * Hadouken
-  * Synology Downloadstation
-  * QNAP DownloadStation
-  * tTorrent (Android)
-  * KODI Elementum (ex Quasar, ex Pulsar) 
-
-
-## How do i get it running?
-To get this set up, follow these steps:
-
-1. Get the extension added to your Chrome Browser by visiting https://chrome.google.com/webstore/detail/oabphaconndgibllomdcjbfdghcmenci.
-2. Open the extension's options through Chrome's wrench menu and set your server's info
-3. If just clicking a link doesn't add the _ to your client, but downloads it locally to your disk, also look at the "Link Catching" tab in the settings page and consult this project's wiki for a short tutorial on how to fix it.
+This extension hardcodes site permissions for now directly in manifest to keep chrome happy:
+* The torrent sites it supports
+* The qbitorrent http address
