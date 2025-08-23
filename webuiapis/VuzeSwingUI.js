@@ -1,31 +1,30 @@
-RTA.clients.vuzeSwingAdder = function(server, data) {
-	if(data.substring(0,7) == "magnet:") {
-		RTA.displayResponse("Client Failure", "sorry, no magnet/link adding support from vuze swing ui. try the vuze remote plugin.", true);
+RTA.clients.vuzeSwingAdder = function (server, data) {
+	// vuze swing ui can't handle magnet links/urls, only torrent files.
+	if (data.substring(0, 7) == "magnet:") {
+		RTA.displayResponse("Client Failure", "Sorry, the Vuze Swing UI does not support adding magnet links directly. Please try the 'Bigly/Vuze Remote WebUI' client type in the options.", true);
 		return;
 	}
-	
-	var xhr = new XMLHttpRequest();
-	xhr.open("POST", "http://" + server.host + ":" + server.port + "/upload.cgi", true);
-	xhr.onreadystatechange = function(data) {
-		if(xhr.readyState == 4 && xhr.status == 200) {
-			if(/.*Upload OK.*/.exec(xhr.responseText)) {
-				RTA.displayResponse("Success", "Torrent added successfully.");
-			} else {
-				RTA.displayResponse("Failure", "Server didn't accept data:\n" + xhr.status + ": " + xhr.responseText, true);
-			}
-		} else if(xhr.readyState == 4 && xhr.status != 200) {
-			RTA.displayResponse("Failure", "Server responded with an irregular HTTP error code:\n" + xhr.status + ": " + xhr.responseText, true);
-		}
-	};
-	
-	// mostly stolen from https://github.com/igstan/ajax-file-upload/blob/master/complex/uploader.js
-	var boundary = "AJAX-----------------------" + (new Date).getTime();
-	xhr.setRequestHeader("Content-Type", "multipart/form-data; boundary=" + boundary);
-	var message = "--" + boundary + "\r\n";
-	   message += "Content-Disposition: form-data; name=\"upfile\"; filename=\"file.torrent\"\r\n";
-	   message += "Content-Type: application/x-bittorrent\r\n\r\n";
-	   message += data + "\r\n";
-	   message += "--" + boundary + "--\r\n";
-	
-	xhr.sendAsBinary(message);
+
+	const url = "http" + (server.hostsecure ? "s" : "") + "://" + server.host + ":" + server.port + "/upload.cgi?type=torrent&stop=1";
+
+	// The data is a binary string. Convert it to a blob.
+	const torrentBlob = RTA.convertToBlob(data, 'application/x-bittorrent');
+
+	const formData = new FormData();
+	formData.append('torrent_file', torrentBlob, 'file.torrent');
+
+	fetch(url, {
+		method: 'POST',
+		headers: {
+			'Authorization': 'Basic ' + btoa(server.login + ":" + server.password)
+		},
+		body: formData
+	})
+		.then(RTA.handleFetchError)
+		.then(response => {
+			RTA.displayResponse("Success", "Torrent added successfully.");
+		})
+		.catch(error => {
+			RTA.displayResponse("Failure", "Server didn't accept data:\n" + error.message, true);
+		});
 }

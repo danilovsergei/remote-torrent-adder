@@ -22,7 +22,7 @@ RTA.clients.config.getConfig = function (client, name) {
 	return config;
 };
 
-RTA.clients.config.generalsettings = multiline(function () {/*
+RTA.clients.config.generalsettings = `
 			<tbody>
 				<tr>
 					<td><span class="title">Name</span></td>
@@ -58,27 +58,27 @@ RTA.clients.config.generalsettings = multiline(function () {/*
 						<span class="tip">Password of the WebUI</span></td>
 				</tr>
 			</tbody>
-			*/});
+			`;
 
 
 
-RTA.clients.config.deluge = multiline(function () {/*
+RTA.clients.config.deluge = `
 			<tbody name="delugewebuispecifics" class="specifics">
 				<tr>
 					<td><span class="title">Relative path</span><br />(optional)</td>
 					<td><input type="text" name="delugerelativepath" /><br />
-						<span class="tip">Enter only the text in quotation marks: http://someserver.com&quot;<strong>/gui</strong>&quot;/<br />
+						<span class="tip">Enter only the text in quotation marks: http://someserver.com"<strong>/gui</strong>"/<br />
 							Note: Unless you are doing reverse-proxying, this field should be left empty</span></td>
 				</tr>
 			</tbody>
-			*/});
+			`;
 
-RTA.clients.config.rutorrent = multiline(function () {/*
+RTA.clients.config.rutorrent = `
 			<tbody name="rutorrentspecifics" class="specifics">
 				<tr>
 					<td><span class="title">Relative path</span></td>
 					<td><input type="text" name="ruTorrentrelativepath" /><br />
-						<span class="tip">Enter only the text in quotation marks: http://someserver.com&quot;<strong>/some/path/to/webui</strong>&quot;/<br />
+						<span class="tip">Enter only the text in quotation marks: http://someserver.com"<strong>/some/path/to/webui</strong>"/<br />
 							Note: this folder should contain the "php" directory.</span></td>
 				</tr>
 				<tr>
@@ -133,7 +133,7 @@ RTA.clients.config.rutorrent = multiline(function () {/*
 						<div style="position:relative; float:left;"><button name="addautolabelbutton">+</button><br />
 						<button name="delautolabelbutton">-</button></div><br style="clear:both;" />
 						<span class="tip">Define labels to be automatically assigned by parsing tracker <strong>Announce URLs</strong>. These are not the domain on the web, but the one set inside the .torrent file. You can find out about them by checking the details of a .torrent file in your torrent client. Format is as follows:</span><br />
-						<span class="tip" style="font-family: Courier New;">&lt;tracker url&gt;,&lt;label to assign&gt;</span><br />
+						<span class="tip" style="font-family: Courier New;"><tracker url>,<label to assign></span><br />
 						<span class="tip">e.g.:</span><br />
 						<span class="tip" style="font-family: Courier New;">torrent.ubuntu.com,Linux Distros</span></td>
 				</tr>
@@ -144,45 +144,45 @@ RTA.clients.config.rutorrent = multiline(function () {/*
 						<div style="position:relative; float:left;"><button name="addautodirbutton">+</button><br />
 						<button name="delautodirbutton">-</button></div><br style="clear:both;" />
 						<span class="tip">Define directories to be automatically assigned by parsing tracker <strong>Announce URLs</strong>. These are not the domain on the web, but the one set inside the .torrent file. You can find out about them by checking the details of a .torrent file in your torrent client. Format is as follows:</span><br />
-						<span class="tip" style="font-family: Courier New;">&lt;tracker url&gt;,&lt;directory to assign&gt;</span><br />
+						<span class="tip" style="font-family: Courier New;"><tracker url>,<directory to assign></span><br />
 						<span class="tip">e.g.:</span><br />
 						<span class="tip" style="font-family: Courier New;">torrent.ubuntu.com,/media/library/linux-distros/</span></td>
 				</tr>
 			</tbody>
-			*/});
+			`;
 
-RTA.clients.config.transmission = multiline(function () {/*
+RTA.clients.config.transmission = `
 			<tbody name="transmissionwebuispecifics" class="specifics">
 				<tr>
 					<td><span class="title">Path</span><br />(optional)</td>
 					<td><input type="text" name="transmissionpath" /></td>
 				</tr>
 			</tbody>
-			*/});
+			`;
 
-RTA.clients.config.torrentflux = multiline(function () {/*
+RTA.clients.config.torrentflux = `
 			<tbody name="torrentfluxspecifics" class="specifics">
 				<tr>
 					<td><span class="title">Relative path</span></td>
 					<td><input type="text" name="torrentfluxrelativepath" /><br />
-						<span class="tip">Enter only the text in quotation marks: http://someserver.com&quot;<strong>/some/path/to/webui</strong>&quot;/<br />
+						<span class="tip">Enter only the text in quotation marks: http://someserver.com"<strong>/some/path/to/webui</strong>"/<br />
 							Note: this directory should contain the files "login.php"/"index.php"</span></td>
 				</tr>
 			</tbody>
-			*/});
+			`;
 
-RTA.clients.config.utorrent = multiline(function () {/*
+RTA.clients.config.utorrent = `
 			<tbody name="utorrentspecifics" class="specifics">
 				<tr>
 					<td><span class="title">Relative path</span><br />(optional)</td>
 					<td><input type="text" name="utorrentrelativepath" /><br />
-						<span class="tip">Enter only the text in quotation marks: http://someserver.com&quot;<strong>/gui/</strong>&quot;<br />
+						<span class="tip">Enter only the text in quotation marks: http://someserver.com"<strong>/gui/</strong>"<br />
 							Note: Unless you are doing reverse-proxying, this field should be left empty</span></td>
 				</tr>
 			</tbody>
-			*/});
+			`;
 
-RTA.clients.config.hadouken = multiline(function () {/*
+RTA.clients.config.hadouken = `
 			<tbody name="hadoukenspecifics" class="specifics">
 				<tr>
 					<td><span class="title">Label</span><br />(optional)</td>
@@ -195,23 +195,23 @@ RTA.clients.config.hadouken = multiline(function () {/*
 						<span class="tip"></span></td>
 				</tr>
 			</tbody>
-			*/});
+			`;
 
-RTA.clients.config.rtorrentxmlrpc = multiline(function () {/*
+RTA.clients.config.rtorrentxmlrpc = `
 			<tbody name="rtorrentxmlrpcspecifics" class="specifics">
 				<tr>
 					<td><span class="title">Relative path</span><br />(optional)</td>
 					<td><input type="text" name="rtorrentxmlrpcrelativepath" /><br />
-						<span class="tip">Enter only the text in quotation marks: http://someserver.com&quot;<strong>/RPC2</strong>&quot;/</span></td>
+						<span class="tip">Enter only the text in quotation marks: http://someserver.com"<strong>/RPC2</strong>"/</span></td>
 				</tr>
 				<tr>
 					<td><span class="title">Add torrents paused?</span></td>
 					<td><input type="checkbox" name="rtorrentaddpaused" /></td>
 				</tr>
 			</tbody>
-			*/});
+			`;
 
-RTA.clients.config.flood = multiline(function () {/*
+RTA.clients.config.flood = `
 			<tbody name="floodspecifics" class="specifics">
 				<tr>
 					<td><span class="title">Directory</span><br />(optional)</td>
@@ -223,9 +223,9 @@ RTA.clients.config.flood = multiline(function () {/*
 					<td><input type="checkbox" name="floodaddpaused" /></td>
 				</tr>
 			</tbody>
-			*/});
+			`;
 
-RTA.clients.config.floodJesec = multiline(function () {/*
+RTA.clients.config.floodJesec = `
 			<tbody name="floodJesecspecifics" class="specifics">
 				<tr>
 					<td><span class="title">Directory</span><br />(optional)</td>
@@ -237,9 +237,9 @@ RTA.clients.config.floodJesec = multiline(function () {/*
 					<td><input type="checkbox" name="floodjesecaddpaused" /></td>
 				</tr>
 			</tbody>
-			*/});
+			`;
 
-RTA.clients.config.qnap = multiline(function () {/*
+RTA.clients.config.qnap = `
 			<tbody name="qnapspecifics" class="specifics">
 				<tr>
 					<td><span class="title">Temp Directory</span><br /></td>
@@ -252,9 +252,9 @@ RTA.clients.config.qnap = multiline(function () {/*
 						<span class="tip">After torrent has completed it will be moved to this directory.</span></td>
 				</tr>
 			</tbody>
-			*/});
+			`;
 
-RTA.clients.config.qbittorrent = multiline(function () {/*
+RTA.clients.config.qbittorrent = `
 			<tbody name="qbittorrentspecifics" class="specifics">
 				<tr>
 					<td><span class="title">Label/Directory<br/>interactivity</span></td>
@@ -262,9 +262,9 @@ RTA.clients.config.qbittorrent = multiline(function () {/*
 						<span class="tip">Enable this to always ask for a label/directory combination upon adding torrents.</span></td>
 				</tr>
 			</tbody>
-			*/});
+			`;
 
-RTA.clients.config.qbittorrentv2 = multiline(function () {/*
+RTA.clients.config.qbittorrentv2 = `
 			<tbody name="qbittorrentv2specifics" class="specifics">
 				<tr>
 					<td><span class="title">Label/Directory<br/>interactivity</span></td>
@@ -272,4 +272,4 @@ RTA.clients.config.qbittorrentv2 = multiline(function () {/*
 						<span class="tip">Enable this to always ask for a label/directory combination upon adding torrents.</span></td>
 				</tr>
 			</tbody>
-			*/});
+			`;
