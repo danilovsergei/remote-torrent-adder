@@ -11,7 +11,6 @@
 	"manifest_version": 2,
 	"description": "Add torrents using several programs' WebUIs",
 	"permissions": [
-		"https://nnmclub.to/*",
 		"contextMenus",
 		"notifications",
 		"tabs",
@@ -64,22 +63,6 @@
 		},
 		"default_title": "Remote Adder"
 	},
-	"content_scripts": [
-		{
-			"matches": [
-				"https://nnmclub.to/*"
-			],
-			"js": [
-				"miscapis/modal.js",
-				"miscapis/content_rta.js"
-			],
-			"css": [
-				"modal.css"
-			],
-			"run_at": "document_end",
-			"all_frames": true
-		}
-	],
 	"web_accessible_resources": [
 		"icons/White_X_in_red_background.svg",
 		"icons/BitTorrent16.png",

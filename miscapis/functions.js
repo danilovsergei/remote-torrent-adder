@@ -1,6 +1,6 @@
 var menuItemIndexToServerIndex = [];
 
-XMLHttpRequest.prototype.sendAsBinary = function(datastr) {
+XMLHttpRequest.prototype.sendAsBinary = function (datastr) {
 	function byteValue(x) {
 		return x.charCodeAt(0) & 0xff;
 	}
@@ -10,7 +10,7 @@ XMLHttpRequest.prototype.sendAsBinary = function(datastr) {
 }
 
 
-RTA.dispatchTorrent = function(server, data, name, label, dir) {
+RTA.dispatchTorrent = function (server, data, name, label, dir) {
 	switch (server.client) {
 		case "Vuze SwingUI":
 			RTA.clients.vuzeSwingAdder(server, data); break;
@@ -62,60 +62,60 @@ RTA.dispatchTorrent = function(server, data, name, label, dir) {
 }
 
 
-RTA.getTorrent = function(server, url, label, dir, referer) {
-	if(url.substring(0,7) == "magnet:" || server.rutorrentalwaysurl) {
+RTA.getTorrent = function (server, url, label, dir, referer) {
+	if (url.substring(0, 7) == "magnet:" || server.rutorrentalwaysurl) {
 		RTA.dispatchTorrent(server, url, "", label, dir);
 	} else {
 		RTA.getTorrentLink = url;
 		RTA.getTorrentLinkReferer = referer;
-		
+
 		fetch(url)
-		.then(RTA.handleFetchError)
-		.then(async function(response) {
-			var name = "file.torrent";
-			if(response.url.match(/\/([^\/]+.torrent)$/)) {
-				name = response.url.match(/\/([^\/]+.torrent)$/)[1];
-			}
-
-			// mangling it as text so it works with the older (xhr-reliant) code.
-			// could probably modernize the webui parts at some point.
-			const fileDataBlob = await response.blob();
-			const buf = await fileDataBlob.arrayBuffer();
-			const ui8a = new Uint8Array(buf);
-			const chunksize = 0x8000;
-			const chunks = [];
-			for(let i = 0; i < ui8a.length; i += chunksize) {
-				chunks.push(String.fromCharCode.apply(null, ui8a.subarray(i, i + chunksize)));
-			}
-			const fileData = chunks.join("");
-
-			// Real .torrent files will start "d8:announce" and no whitepace
-			const peek = fileData.slice(0, 11);
-
-			if (!peek || !peek.startsWith("d8:announce")) {
-				let contentType = response.headers.get("Content-Type");
-				if (contentType) {
-					const semicolonPos = contentType.indexOf(";");
-					contentType = contentType.slice(0, semicolonPos).trim();
-				} else {
-					contentType = "unknown"
+			.then(RTA.handleFetchError)
+			.then(async function (response) {
+				var name = "file.torrent";
+				if (response.url.match(/\/([^\/]+.torrent)$/)) {
+					name = response.url.match(/\/([^\/]+.torrent)$/)[1];
 				}
-				throw new Error("Received " + contentType + " content instead of a .torrent file");
-			}
-			
-			RTA.dispatchTorrent(server, fileData, name, label, dir);
-		})
-		.catch(error => {
-			RTA.displayResponse("Failure", "Could not download torrent file.\nError: " + error.message, true);
-		});
+
+				// mangling it as text so it works with the older (xhr-reliant) code.
+				// could probably modernize the webui parts at some point.
+				const fileDataBlob = await response.blob();
+				const buf = await fileDataBlob.arrayBuffer();
+				const ui8a = new Uint8Array(buf);
+				const chunksize = 0x8000;
+				const chunks = [];
+				for (let i = 0; i < ui8a.length; i += chunksize) {
+					chunks.push(String.fromCharCode.apply(null, ui8a.subarray(i, i + chunksize)));
+				}
+				const fileData = chunks.join("");
+
+				// Real .torrent files will start "d8:announce" and no whitepace
+				const peek = fileData.slice(0, 11);
+
+				if (!peek || !peek.startsWith("d8:announce")) {
+					let contentType = response.headers.get("Content-Type");
+					if (contentType) {
+						const semicolonPos = contentType.indexOf(";");
+						contentType = contentType.slice(0, semicolonPos).trim();
+					} else {
+						contentType = "unknown"
+					}
+					throw new Error("Received " + contentType + " content instead of a .torrent file");
+				}
+
+				RTA.dispatchTorrent(server, fileData, name, label, dir);
+			})
+			.catch(error => {
+				RTA.displayResponse("Failure", "Could not download torrent file.\nError: " + error.message, true);
+			});
 	}
 }
 
 
-RTA.audioNotification = function(error) {
+RTA.audioNotification = function (error) {
 	var sound = new Audio();
 
-	switch(error) {
+	switch (error) {
 		case false:
 			sound = new Audio('sounds/success.ogg');
 			break;
@@ -128,40 +128,40 @@ RTA.audioNotification = function(error) {
 }
 
 
-RTA.displayResponse = function(title, message, error=false) {
-	if(localStorage.getItem("showpopups") == "true") {
-		var opts = { 
-					type: "basic", 
-					iconUrl: (error === true) ? "icons/BitTorrent128-red.png" : "icons/BitTorrent128.png", 
-					title: title,
-					priority: 0,
-					message: message
-					};
+RTA.displayResponse = function (title, message, error = false) {
+	if (localStorage.getItem("showpopups") == "true") {
+		var opts = {
+			type: "basic",
+			iconUrl: (error === true) ? "icons/BitTorrent128-red.png" : "icons/BitTorrent128.png",
+			title: title,
+			priority: 0,
+			message: message
+		};
 		var id = Math.floor(Math.random() * 99999) + "";
-		
-		chrome.notifications.create(id, opts, function(myId) { 
-			setTimeout(function() {
-				chrome.notifications.clear(myId, function() {});
+
+		chrome.notifications.create(id, opts, function (myId) {
+			setTimeout(function () {
+				chrome.notifications.clear(myId, function () { });
 			}, localStorage.getItem('popupduration'));
 		});
-		
-		
-		
-		if(localStorage.getItem("hearpopups") == "true") {
+
+
+
+		if (localStorage.getItem("hearpopups") == "true") {
 			RTA.audioNotification(error);
 		}
 	}
 }
 
 
-RTA.constructContextMenu = function() {
+RTA.constructContextMenu = function () {
 	chrome.contextMenus.removeAll();
 
-	if(localStorage.getItem("catchfromcontextmenu") == "true") {
+	if (localStorage.getItem("catchfromcontextmenu") == "true") {
 		// for if there's only one entry
 		var contextMenuId = chrome.contextMenus.create({
 			"title": "Add to Remote WebUI",
-			"contexts": [ "link" ],
+			"contexts": ["link"],
 			"onclick": RTA.genericOnClick
 		});
 		menuItemIndexToServerIndex[contextMenuId] = 0;
@@ -170,20 +170,20 @@ RTA.constructContextMenu = function() {
 		var servers = localStorage.getItem("servers") ? JSON.parse(localStorage.getItem("servers")) : [];
 		var numServers = servers.length;
 
-		if(numServers > 1) {
-			for(var i = 0; i < numServers; i++) {
+		if (numServers > 1) {
+			for (var i = 0; i < numServers; i++) {
 				var thisId = chrome.contextMenus.create({
 					"title": servers[i].name,
-					"contexts": [ "link" ],
+					"contexts": ["link"],
 					"parentId": contextMenuId,
 					"onclick": RTA.genericOnClick
 				});
 				menuItemIndexToServerIndex[thisId] = i;
 			}
-			chrome.contextMenus.create({"type" : "separator", "contexts": [ "link" ], "parentId": contextMenuId});
+			chrome.contextMenus.create({ "type": "separator", "contexts": ["link"], "parentId": contextMenuId });
 			var allId = chrome.contextMenus.create({
 				"title": "send to all",
-				"contexts": [ "link" ],
+				"contexts": ["link"],
 				"parentId": contextMenuId,
 				"onclick": RTA.genericOnClick
 			});
@@ -193,34 +193,55 @@ RTA.constructContextMenu = function() {
 }
 
 
-RTA.genericOnClick = function(info, tab) {
-	var servers = JSON.parse(localStorage.getItem("servers"));
-	var serverId = menuItemIndexToServerIndex[info.menuItemId];
+RTA.genericOnClick = function (info, tab) {
+	var linkUrl = info.linkUrl;
 
-	if(serverId === -1) { // send to all servers
-		for(var i in servers) {
-			RTA.getTorrent(servers[i], info.linkUrl, null, null, tab.url);
-		}
-	} else { // only one server specified
-		var server = JSON.parse(localStorage.getItem("servers"))[serverId];
+	var addTorrent = function () {
+		var servers = JSON.parse(localStorage.getItem("servers"));
+		var serverId = menuItemIndexToServerIndex[info.menuItemId];
 
-		if(server.rutorrentdirlabelask == true && server.client == "ruTorrent WebUI") {
-			chrome.tabs.sendRequest(tab.id, {"action": "showLabelDirChooser", "url": info.linkUrl, "settings": localStorage, "server": server});
+		if (serverId === -1) { // send to all servers
+			for (var i in servers) {
+				RTA.getTorrent(servers[i], linkUrl, null, null, tab.url);
+			}
+		} else { // only one server specified
+			var server = JSON.parse(localStorage.getItem("servers"))[serverId];
+
+			if (server.rutorrentdirlabelask == true && server.client == "ruTorrent WebUI") {
+				chrome.tabs.sendRequest(tab.id, { "action": "showLabelDirChooser", "url": linkUrl, "settings": localStorage, "server": server });
+			}
+			else if (server.qbittorrentdirlabelask == true && server.client == "qBittorrent WebUI") {
+				chrome.tabs.sendRequest(tab.id, { "action": "showLabelDirChooser", "url": linkUrl, "settings": localStorage, "server": server });
+			}
+			else if (server.qbittorrentv2dirlabelask == true && server.client == "qBittorrent v4.1+ WebUI") {
+				chrome.tabs.sendRequest(tab.id, { "action": "showLabelDirChooser", "url": linkUrl, "settings": localStorage, "server": server });
+			}
+			else {
+				RTA.getTorrent(server, linkUrl, null, null, tab.url);
+			}
 		}
-		else if (server.qbittorrentdirlabelask == true && server.client == "qBittorrent WebUI") {
-			chrome.tabs.sendRequest(tab.id, {"action": "showLabelDirChooser", "url": info.linkUrl, "settings": localStorage, "server": server});
-		} 
-		else if (server.qbittorrentv2dirlabelask == true && server.client == "qBittorrent v4.1+ WebUI") {
-			chrome.tabs.sendRequest(tab.id, {"action": "showLabelDirChooser", "url": info.linkUrl, "settings": localStorage, "server": server});
-		} 
-		else {
-			RTA.getTorrent(server, info.linkUrl, null, null, tab.url);
-		}
+	};
+
+	if (linkUrl.startsWith("http:") || linkUrl.startsWith("https:")) {
+		var url = new URL(linkUrl);
+		var origin = url.origin + "/*";
+
+		chrome.permissions.request({
+			origins: [origin]
+		}, function (granted) {
+			if (granted) {
+				addTorrent();
+			} else {
+				console.log("Permission was denied for: " + origin);
+			}
+		});
+	} else {
+		addTorrent();
 	}
 }
 
 
-RTA.extractTorrentInfo = function(data) {
+RTA.extractTorrentInfo = function (data) {
 	var info = {};
 
 	var buf = Buffer.Buffer.from(data, 'ascii');
@@ -228,10 +249,10 @@ RTA.extractTorrentInfo = function(data) {
 
 	info.trackers = new Set();
 	info.trackers.add(decoded["announce"]);
-	if(!!decoded["announce-list"] && !!decoded["announce-list"].length > 0) {
-		for(var i = 0; i < decoded["announce-list"].length; i++) {
-			if(Array.isArray(decoded["announce-list"][i])) {
-				for(var j = 0; j < decoded["announce-list"][i].length; j++) {
+	if (!!decoded["announce-list"] && !!decoded["announce-list"].length > 0) {
+		for (var i = 0; i < decoded["announce-list"].length; i++) {
+			if (Array.isArray(decoded["announce-list"][i])) {
+				for (var j = 0; j < decoded["announce-list"][i].length; j++) {
 					info.trackers.add(decoded["announce-list"][i][j]);
 				}
 			}
@@ -240,8 +261,8 @@ RTA.extractTorrentInfo = function(data) {
 
 	info.name = decoded["info"]["name"];
 	info.files = [];
-	if(decoded["info"]["files"]) {
-		for(var i = 0; i < decoded["info"]["files"].length; i++) {
+	if (decoded["info"]["files"]) {
+		for (var i = 0; i < decoded["info"]["files"].length; i++) {
 			var thisFilePath = decoded["info"]["files"][i]["path"];
 			info.files.push(thisFilePath[thisFilePath.length - 1]);
 		}
@@ -255,26 +276,26 @@ RTA.extractTorrentInfo = function(data) {
 }
 
 
-RTA.handleFetchError = function(response) {
-	if(!response.ok) {
+RTA.handleFetchError = function (response) {
+	if (!response.ok) {
 		throw Error(response.statusText);
 	}
 	return response;
 };
 
 
-RTA.convertToBlob = function(data, myType="text/plain") {
+RTA.convertToBlob = function (data, myType = "text/plain") {
 	const ords = Array.prototype.map.call(data, function byteValue(x) {
 		return x.charCodeAt(0) & 0xff;
 	});
 	const ui8a = new Uint8Array(ords);
-	const dataBlob = new Blob([ui8a.buffer], {type: myType});
+	const dataBlob = new Blob([ui8a.buffer], { type: myType });
 
 	return dataBlob;
 };
 
 
-RTA.blobToBase64 = function(blob) {
+RTA.blobToBase64 = function (blob) {
 	const reader = new FileReader();
 	reader.readAsDataURL(blob);
 	return new Promise(resolve => {
