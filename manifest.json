@@ -14,11 +14,9 @@
 		"contextMenus",
 		"notifications",
 		"tabs",
-		"webRequest",
 		"declarativeNetRequest"
 	],
-	"optional_permissions": [],
-	"host_permissions": [
+	"optional_host_permissions": [
 		"*://*/*"
 	],
 	"background": {
