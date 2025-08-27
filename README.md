@@ -31,6 +31,6 @@ It supports the following BitTorrent clients:
 ## How do i get it running?
 To get this set up, follow these steps:
 
-1. Get the extension added to your Chrome Browser by visiting https://chrome.google.com/webstore/detail/oabphaconndgibllomdcjbfdghcmenci.
+1. Get the extension added to your Chrome Browser from [chrome web store](https://chromewebstore.google.com/detail/remote-torrent-adder-20/boaagclaaldomaifffijcfbmapagjcoe)
 2. Open the extension's options through Chrome's wrench menu and set your server's info
 3. If just clicking a link doesn't add the _ to your client, but downloads it locally to your disk, also look at the "Link Catching" tab in the settings page and consult this project's wiki for a short tutorial on how to fix it.
