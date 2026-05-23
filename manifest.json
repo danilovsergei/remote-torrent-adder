@@ -6,7 +6,7 @@
 		"48": "icons/BitTorrent48.png",
 		"128": "icons/BitTorrent128.png"
 	},
-	"version": "2.0.0",
+	"version": "2.1.0",
 	"manifest_version": 3,
 	"description": "Add torrents using several programs' WebUIs",
 	"permissions": [
