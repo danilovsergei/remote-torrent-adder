@@ -79,38 +79,38 @@ $(document).ready(function () {
 					saveServersSettings();
 				});
 
-				$("button[name=requestpermission]").click(function () {
-					var server = {};
-					var elements = $(this).parents("div[id^=servertabs-]").find("input, select").get();
-					for (var u in elements) {
-						var element = elements[u];
+				$("button[name=saveserver]").click(function () {
+					var button = $(this);
+					var serverName = button.parents("div[id^=servertabs-]").find("input[name=name]").val();
+					var hostInput = button.parents("div[id^=servertabs-]").find("input[name=host]").val();
+					var portInput = button.parents("div[id^=servertabs-]").find("input[name=port]").val();
+					var hostsecure = button.parents("div[id^=servertabs-]").find("input[name=hostsecure]").prop('checked');
 
-						switch (element.type) {
-							case "checkbox":
-								server[element.name] = $(element).prop('checked');
-								break;
-							case "select-multiple":
-								server[element.name] = JSON.stringify(Array.prototype.map.call(element.options, function (x) { return x.value }));
-								break;
-							default:
-								server[element.name] = $(element).val();
-						}
-					}
+					console.log("[INFO] Save Server clicked for: " + serverName);
 
-					if (server.host && server.port) {
-						var scheme = server.hostsecure ? "https://" : "http://";
-						// The permission needs a wildcard at the end of the path.
-						var nasAddress = scheme + server.host + ":" + server.port + "/*";
+					// If host and port are provided, request permission first
+					if (hostInput && portInput) {
+						var scheme = hostsecure ? "https://" : "http://";
+						var nasAddress = scheme + hostInput + ":" + portInput + "/*";
+
+						console.log("[INFO] Requesting permission for: " + nasAddress);
 
 						chrome.permissions.request({
 							origins: [nasAddress]
 						}, function (granted) {
 							if (granted) {
-								console.log("Permission was granted for: " + nasAddress);
+								console.log("[SUCCESS] Permission granted for: " + nasAddress);
+								saveServersSettings();
+								showSaveStatus(serverName, "Saved!", false);
 							} else {
-								console.log("Permission was denied for: " + nasAddress);
+								console.error("[ERROR] Permission denied for: " + nasAddress);
+								showSaveStatus(serverName, "Permission denied", true);
 							}
 						});
+					} else {
+						// No host/port, just save without permission request
+						saveServersSettings();
+						showSaveStatus(serverName, "Saved!", false);
 					}
 				});
 
@@ -447,10 +447,35 @@ function saveServersSettings() {
 		servers[order[thisId]] = server;
 	});
 
-	chrome.storage.local.set({ "servers": servers }, () => {
+	console.log("[INFO] Saving " + servers.length + " server(s)...");
+	chrome.storage.local.set({ "servers": servers }, (error) => {
+		if (error) {
+			console.error("[ERROR] Failed to save servers: " + error.message);
+		} else {
+			console.log("[SUCCESS] Servers saved successfully.");
+			console.log("[DEBUG] Saved servers data:", JSON.stringify(servers));
+			console.log("[DEBUG] Calling constructContextMenu to update context menu...");
+		}
 		chrome.runtime.sendMessage({ "action": "constructContextMenu" });
 		chrome.runtime.sendMessage({ "action": "registerRefererListeners" });
 	});
 
 	return servers;
+}
+
+function showSaveStatus(serverName, status, isError) {
+	// Try to find status element - check both with server name and without
+	var statusId = "save-status-" + serverName;
+	var statusEl = document.getElementById(statusId);
+	if (!statusEl) {
+		// Fallback to generic save-status id
+		statusEl = document.getElementById("save-status");
+	}
+	if (statusEl) {
+		statusEl.textContent = status;
+		statusEl.style.color = isError ? "red" : "green";
+		setTimeout(function () {
+			statusEl.textContent = "";
+		}, 3000);
+	}
 }
