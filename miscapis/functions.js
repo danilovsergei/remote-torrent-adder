@@ -119,6 +119,7 @@ RTA.audioNotification = function (error) {
 
 
 RTA.displayResponse = function (title, message, error = false) {
+	console.log("[" + (error ? "FAILURE" : "SUCCESS") + "] " + title + ": " + message);
 	chrome.storage.local.get(["showpopups", "popupduration", "hearpopups"], (result) => {
 		if (result.showpopups == "true") {
 			var opts = {
@@ -147,8 +148,10 @@ RTA.displayResponse = function (title, message, error = false) {
 
 
 RTA.constructContextMenu = function () {
+	console.log("[DEBUG] constructContextMenu called");
 	chrome.contextMenus.removeAll(() => {
 		chrome.storage.local.get(["catchfromcontextmenu", "servers"], (result) => {
+			console.log("[DEBUG] constructContextMenu loaded servers:", JSON.stringify(result.servers));
 			if (result.catchfromcontextmenu == "true") {
 				// for if there's only one entry
 				const parentId = "rta_main_context";
@@ -197,11 +200,14 @@ RTA.constructContextMenu = function () {
 
 RTA.genericOnClick = function (info, tab) {
 	var linkUrl = info.linkUrl;
+	console.log("[DEBUG] genericOnClick called, menuItemId:", info.menuItemId);
 
 	var addTorrent = function () {
 		chrome.storage.local.get(["servers"], (result) => {
 			var servers = result.servers;
+			console.log("[DEBUG] servers from storage:", JSON.stringify(servers));
 			var serverId = menuItemIndexToServerIndex[info.menuItemId];
+			console.log("[DEBUG] serverId from menuItemIndexToServerIndex:", serverId);
 
 			if (serverId === -1) { // send to all servers
 				for (var i in servers) {
