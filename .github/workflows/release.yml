@@ -1,0 +1,36 @@
+name: Generate Release Notes
+
+on:
+  push:
+    tags:
+      - 'v*' # Triggers only when you push a tag like v1.0.0
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    
+    # Required permissions to create a GitHub Release
+    permissions:
+      contents: write 
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate Release Notes
+        id: git-cliff
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: .github/workflows/cliff.toml
+          # --latest grabs only the newest changes
+          # --strip header removes the main "# Changelog" title from the top
+          args: --verbose --latest --strip header
+        env:
+          OUTPUT: release_notes.md # Saves just the latest notes to a temp file
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: release_notes.md # Injects the git-cliff output into the release body
