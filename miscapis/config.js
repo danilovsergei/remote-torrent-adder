@@ -34,7 +34,7 @@ RTA.clients.config.generalsettings = `
 				</tr>
 				<tr>
 					<td><span class="title">Host</span></td>
-					<td><input type="text" name="host" /><button name="requestpermission">Request Permission</button><br />
+					<td><input type="text" name="host" /><br />
 						<span class="tip">The ip/hostname to connect to</span></td>
 				</tr>
 				<tr>
@@ -69,6 +69,9 @@ RTA.clients.config.deluge = `
 					<td><input type="text" name="delugerelativepath" /><br />
 						<span class="tip">Enter only the text in quotation marks: http://someserver.com"<strong>/gui</strong>"/<br />
 							Note: Unless you are doing reverse-proxying, this field should be left empty</span></td>
+				</tr>
+				<tr>
+					<td colspan="2"><button name="saveserver" class="saveserverbtn">Save Server</button><span class="save-status" id="save-status"></span></td>
 				</tr>
 			</tbody>
 			`;
@@ -148,6 +151,9 @@ RTA.clients.config.rutorrent = `
 						<span class="tip">e.g.:</span><br />
 						<span class="tip" style="font-family: Courier New;">torrent.ubuntu.com,/media/library/linux-distros/</span></td>
 				</tr>
+				<tr>
+					<td colspan="2"><button name="saveserver" class="saveserverbtn">Save Server</button><span class="save-status" id="save-status"></span></td>
+				</tr>
 			</tbody>
 			`;
 
@@ -156,6 +162,9 @@ RTA.clients.config.transmission = `
 				<tr>
 					<td><span class="title">Path</span><br />(optional)</td>
 					<td><input type="text" name="transmissionpath" /></td>
+				</tr>
+				<tr>
+					<td colspan="2"><button name="saveserver" class="saveserverbtn">Save Server</button><span class="save-status" id="save-status"></span></td>
 				</tr>
 			</tbody>
 			`;
@@ -168,6 +177,9 @@ RTA.clients.config.torrentflux = `
 						<span class="tip">Enter only the text in quotation marks: http://someserver.com"<strong>/some/path/to/webui</strong>"/<br />
 							Note: this directory should contain the files "login.php"/"index.php"</span></td>
 				</tr>
+				<tr>
+					<td colspan="2"><button name="saveserver" class="saveserverbtn">Save Server</button><span class="save-status" id="save-status"></span></td>
+				</tr>
 			</tbody>
 			`;
 
@@ -176,8 +188,11 @@ RTA.clients.config.utorrent = `
 				<tr>
 					<td><span class="title">Relative path</span><br />(optional)</td>
 					<td><input type="text" name="utorrentrelativepath" /><br />
-						<span class="tip">Enter only the text in quotation marks: http://someserver.com"<strong>/gui/</strong>"<br />
+						<span class="tip">Enter only the text in quotation marks: http://someserver.com"<strong>/gui/</strong>"/<br />
 							Note: Unless you are doing reverse-proxying, this field should be left empty</span></td>
+				</tr>
+				<tr>
+					<td colspan="2"><button name="saveserver" class="saveserverbtn">Save Server</button><span class="save-status" id="save-status"></span></td>
 				</tr>
 			</tbody>
 			`;
@@ -194,6 +209,9 @@ RTA.clients.config.hadouken = `
 					<td><input type="text" name="hadoukendir" /><br />
 						<span class="tip"></span></td>
 				</tr>
+				<tr>
+					<td colspan="2"><button name="saveserver" class="saveserverbtn">Save Server</button><span class="save-status" id="save-status"></span></td>
+				</tr>
 			</tbody>
 			`;
 
@@ -207,6 +225,9 @@ RTA.clients.config.rtorrentxmlrpc = `
 				<tr>
 					<td><span class="title">Add torrents paused?</span></td>
 					<td><input type="checkbox" name="rtorrentaddpaused" /></td>
+				</tr>
+				<tr>
+					<td colspan="2"><button name="saveserver" class="saveserverbtn">Save Server</button><span class="save-status" id="save-status"></span></td>
 				</tr>
 			</tbody>
 			`;
@@ -222,6 +243,9 @@ RTA.clients.config.flood = `
 					<td><span class="title">Add torrents paused?</span></td>
 					<td><input type="checkbox" name="floodaddpaused" /></td>
 				</tr>
+				<tr>
+					<td colspan="2"><button name="saveserver" class="saveserverbtn">Save Server</button><span class="save-status" id="save-status"></span></td>
+				</tr>
 			</tbody>
 			`;
 
@@ -235,6 +259,9 @@ RTA.clients.config.floodJesec = `
 				<tr>
 					<td><span class="title">Add torrents paused?</span></td>
 					<td><input type="checkbox" name="floodjesecaddpaused" /></td>
+				</tr>
+				<tr>
+					<td colspan="2"><button name="saveserver" class="saveserverbtn">Save Server</button><span class="save-status" id="save-status"></span></td>
 				</tr>
 			</tbody>
 			`;
@@ -251,6 +278,9 @@ RTA.clients.config.qnap = `
 					<td><input type="text" name="qnapmove" /><br />
 						<span class="tip">After torrent has completed it will be moved to this directory.</span></td>
 				</tr>
+				<tr>
+					<td colspan="2"><button name="saveserver" class="saveserverbtn">Save Server</button><span class="save-status" id="save-status"></span></td>
+				</tr>
 			</tbody>
 			`;
 
@@ -261,6 +291,9 @@ RTA.clients.config.qbittorrent = `
 					<td><input type="checkbox" name="qbittorrentdirlabelask" /><br />
 						<span class="tip">Enable this to always ask for a label/directory combination upon adding torrents.</span></td>
 				</tr>
+				<tr>
+					<td colspan="2"><button name="saveserver" class="saveserverbtn">Save Server</button><span class="save-status" id="save-status"></span></td>
+				</tr>
 			</tbody>
 			`;
 
@@ -270,6 +303,9 @@ RTA.clients.config.qbittorrentv2 = `
 					<td><span class="title">Label/Directory<br/>interactivity</span></td>
 					<td><input type="checkbox" name="qbittorrentv2dirlabelask" /><br />
 						<span class="tip">Enable this to always ask for a label/directory combination upon adding torrents.</span></td>
+				</tr>
+				<tr>
+					<td colspan="2"><button name="saveserver" class="saveserverbtn">Save Server</button><span class="save-status" id="save-status"></span></td>
 				</tr>
 			</tbody>
 			`;
