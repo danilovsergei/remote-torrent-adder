@@ -1,0 +1,24 @@
+name: Publish Chrome Extension
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 24
+      - name: Package extension
+        run: |
+          zip -r extension.zip . -x "*.git*" "*.github*" "*.DS_Store" "*.zip"
+      - name: Upload to Chrome Web Store
+        uses: mnao305/chrome-extension-upload@v6.0.0
+        with:
+          file-path: extension.zip
+          extension-id: boaagclaaldomaifffijcfbmapagjcoe
+          client-id: ${{ secrets.CHROME_CLIENT_ID }}
+          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
