@@ -28,9 +28,11 @@ $(document).ready(function () {
 			modal: true,
 			buttons: {
 				Add: function () {
-					if (addTab(tabTitle.val())) {
-						$(this).dialog("close");
-					}
+					addTab(tabTitle.val(), null, false, function (success) {
+						if (success) {
+							dialog.dialog("close");
+						}
+					});
 				},
 				Cancel: function () {
 					$(this).dialog("close");
@@ -42,13 +44,15 @@ $(document).ready(function () {
 		});
 
 		var form = dialog.find("form").submit(function () {
-			if (addTab(tabTitle.val())) {
-				dialog.dialog("close");
-			}
+			addTab(tabTitle.val(), null, false, function (success) {
+				if (success) {
+					dialog.dialog("close");
+				}
+			});
 			return false;
 		});
 
-		function addTab(name, client, oldload) {
+		function addTab(name, client, oldload, callback) {
 			chrome.storage.local.get(["servers"], (result) => {
 				// some input validation
 				var servers = result.servers;
@@ -56,6 +60,7 @@ $(document).ready(function () {
 					for (var x in servers) {
 						if (servers[x].name == name || name === null || name === "") {
 							alert("This name is already in use by another server, or invalid.");
+							if (callback) callback(false);
 							return false;
 						}
 					}
@@ -114,6 +119,7 @@ $(document).ready(function () {
 					}
 				});
 
+				if (callback) callback(true);
 				return true;
 			});
 		}
