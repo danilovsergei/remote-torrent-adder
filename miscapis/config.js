@@ -2,14 +2,10 @@ RTA.clients.config.getConfig = function (client, name) {
 	var clientMap = {
 		"ruTorrent WebUI": RTA.clients.config.rutorrent,
 		"Transmission WebUI": RTA.clients.config.transmission,
-		"Torrentflux WebUI": RTA.clients.config.torrentflux,
-		"uTorrent WebUI": RTA.clients.config.utorrent,
 		"Deluge WebUI": RTA.clients.config.deluge,
-		"Hadouken WebUI": RTA.clients.config.hadouken,
 		"flood WebUI": RTA.clients.config.flood,
 		"flood-jesec WebUI": RTA.clients.config.floodJesec,
 		"QNAP DownloadStation": RTA.clients.config.qnap,
-		"qBittorrent WebUI": RTA.clients.config.qbittorrent,
 		"qBittorrent v4.1+ WebUI": RTA.clients.config.qbittorrentv2,
 		"rTorrent XML-RPC": RTA.clients.config.rtorrentxmlrpc
 	};
@@ -169,52 +165,6 @@ RTA.clients.config.transmission = `
 			</tbody>
 			`;
 
-RTA.clients.config.torrentflux = `
-			<tbody name="torrentfluxspecifics" class="specifics">
-				<tr>
-					<td><span class="title">Relative path</span></td>
-					<td><input type="text" name="torrentfluxrelativepath" /><br />
-						<span class="tip">Enter only the text in quotation marks: http://someserver.com"<strong>/some/path/to/webui</strong>"/<br />
-							Note: this directory should contain the files "login.php"/"index.php"</span></td>
-				</tr>
-				<tr>
-					<td colspan="2"><button name="saveserver" class="saveserverbtn">Save Server</button><span class="save-status" id="save-status"></span></td>
-				</tr>
-			</tbody>
-			`;
-
-RTA.clients.config.utorrent = `
-			<tbody name="utorrentspecifics" class="specifics">
-				<tr>
-					<td><span class="title">Relative path</span><br />(optional)</td>
-					<td><input type="text" name="utorrentrelativepath" /><br />
-						<span class="tip">Enter only the text in quotation marks: http://someserver.com"<strong>/gui/</strong>"/<br />
-							Note: Unless you are doing reverse-proxying, this field should be left empty</span></td>
-				</tr>
-				<tr>
-					<td colspan="2"><button name="saveserver" class="saveserverbtn">Save Server</button><span class="save-status" id="save-status"></span></td>
-				</tr>
-			</tbody>
-			`;
-
-RTA.clients.config.hadouken = `
-			<tbody name="hadoukenspecifics" class="specifics">
-				<tr>
-					<td><span class="title">Label</span><br />(optional)</td>
-					<td><input type="text" name="hadoukenlabel" /><br />
-						<span class="tip"></span></td>
-				</tr>
-				<tr>
-					<td><span class="title">Directory</span><br />(optional)</td>
-					<td><input type="text" name="hadoukendir" /><br />
-						<span class="tip"></span></td>
-				</tr>
-				<tr>
-					<td colspan="2"><button name="saveserver" class="saveserverbtn">Save Server</button><span class="save-status" id="save-status"></span></td>
-				</tr>
-			</tbody>
-			`;
-
 RTA.clients.config.rtorrentxmlrpc = `
 			<tbody name="rtorrentxmlrpcspecifics" class="specifics">
 				<tr>
@@ -277,19 +227,6 @@ RTA.clients.config.qnap = `
 					<td><span class="title">Destination Directory</span><br /></td>
 					<td><input type="text" name="qnapmove" /><br />
 						<span class="tip">After torrent has completed it will be moved to this directory.</span></td>
-				</tr>
-				<tr>
-					<td colspan="2"><button name="saveserver" class="saveserverbtn">Save Server</button><span class="save-status" id="save-status"></span></td>
-				</tr>
-			</tbody>
-			`;
-
-RTA.clients.config.qbittorrent = `
-			<tbody name="qbittorrentspecifics" class="specifics">
-				<tr>
-					<td><span class="title">Label/Directory<br/>interactivity</span></td>
-					<td><input type="checkbox" name="qbittorrentdirlabelask" /><br />
-						<span class="tip">Enable this to always ask for a label/directory combination upon adding torrents.</span></td>
 				</tr>
 				<tr>
 					<td colspan="2"><button name="saveserver" class="saveserverbtn">Save Server</button><span class="save-status" id="save-status"></span></td>

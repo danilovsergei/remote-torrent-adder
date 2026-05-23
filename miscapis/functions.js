@@ -3,36 +3,14 @@ var menuItemIndexToServerIndex = [];
 
 RTA.dispatchTorrent = function (server, data, name, label, dir) {
 	switch (server.client) {
-		case "Vuze SwingUI":
-			RTA.clients.vuzeSwingAdder(server, data); break;
-		case "Torrentflux WebUI":
-			RTA.clients.torrentfluxAdder(server, data, name); break;
 		case "Transmission WebUI":
 			RTA.clients.transmissionAdder(server, data); break;
-		case "uTorrent WebUI":
-			RTA.clients.uTorrentAdder(server, data); break;
 		case "ruTorrent WebUI":
 			RTA.clients.ruTorrentAdder(server, data, label, dir); break;
-		case "Vuze HTML WebUI":
-			RTA.clients.vuzeHtmlAdder(server, data); break;
-		case "Vuze Remote WebUI":
-		case "Bigly/Vuze Remote WebUI":
-			RTA.clients.vuzeRemoteAdder(server, data); break;
-		case "Buffalo WebUI":
-		case "Buffalo WebUI (OLD!)":
-			RTA.clients.buffaloAdder(server, data, name); break;
-		case "qBittorrent WebUI":
-			RTA.clients.qBittorrentAdder(server, data, name, label, dir); break;
 		case "Deluge WebUI":
 			RTA.clients.delugeAdder(server, data, name); break;
-		case "pyrt WebUI":
-			RTA.clients.pyrtAdder(server, data, name); break;
 		case "Tixati WebUI":
 			RTA.clients.tixatiAdder(server, data, name); break;
-		case "Hadouken WebUI":
-			RTA.clients.hadoukenAdder(server, data, name); break;
-		case "NodeJS-rTorrent WebUI":
-			RTA.clients.nodeJSrTorrentAdder(server, data, name); break;
 		case "Synology WebUI":
 			RTA.clients.synologyAdder(server, data, name); break;
 		case "flood WebUI":

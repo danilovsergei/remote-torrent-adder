@@ -12,20 +12,17 @@ Chrome started blocking [Remote Torrent Adder](https://github.com/bogenpirat/rem
 The Chrome Web Browser - albeit an excellent browsing tool - does not permit its extensions a lot of access into its functionality. Hence, an extension that would download a ._ file and automatically open it in the user's BitTorrent client locally can't be easily implemented. *Remote Torrent Adder* utilizes the WebUIs of modern BitTorrent clients to implement the functionality required for this scenario - and it works locally as well as for BitTorrent clients on other machines!
 
 It supports the following BitTorrent clients:
-  * QBittorrent
-  * Bigly/Vuze (through plugins: Vuze Remote, SwingUI, HTML WebUI)
-  * uTorrent (including uTorrent Server, uTorrent for Mac and newer Buffalo Linkstations)
+  * QBittorrent (v4.1+)
   * Transmission
   * Deluge
-  * ru_ (ruTorrent, pyrt, NodeJS-rTorrent, flood(&-jesec), direct XMLRPC interface)
-  * Torrentflux
-  * Buffalo built-in _ client
+  * ruTorrent
   * Tixati
-  * Hadouken
   * Synology Downloadstation
   * QNAP DownloadStation
+  * flood (and flood-jesec)
   * tTorrent (Android)
-  * KODI Elementum (ex Quasar, ex Pulsar) 
+  * Elementum (KODI)
+  * rTorrent XML-RPC
 
 
 ## How do i get it running?
