@@ -19,6 +19,11 @@ importScripts(
     'webuiapis/elementumWebUi.js'
 );
 
+// Register context menu click listener unconditionally at top level.
+// In MV3 the service worker is ephemeral; this ensures the listener is
+// bound immediately when the worker wakes up, before any async calls.
+chrome.contextMenus.onClicked.addListener(RTA.genericOnClick);
+
 ///////////////////////////////////////////////////////
 // TAKE CARE OF EXTENSION SETTINGS. VIRGIN/OLD INSTALL?
 ///////////////////////////////////////////////////////
@@ -53,10 +58,6 @@ chrome.runtime.onInstalled.addListener(() => {
     });
 });
 
-//////////////////////////////////////////////////////
-// REGISTER CONTEXT (RIGHT-CLICK) MENU ITEMS FOR LINKS
-//////////////////////////////////////////////////////
-RTA.constructContextMenu();
 
 ////////////////////
 // GRAB FROM NEW TAB

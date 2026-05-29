@@ -151,8 +151,7 @@ RTA.constructContextMenu = function () {
 							"id": serverId,
 							"title": servers[i].name,
 							"contexts": ["link"],
-							"parentId": parentId,
-							"onclick": RTA.genericOnClick
+							"parentId": parentId
 						});
 						menuItemIndexToServerIndex[serverId] = i;
 					}
@@ -162,13 +161,12 @@ RTA.constructContextMenu = function () {
 						"id": allId,
 						"title": "send to all",
 						"contexts": ["link"],
-						"parentId": parentId,
-						"onclick": RTA.genericOnClick
+						"parentId": parentId
 					});
 					menuItemIndexToServerIndex[allId] = -1;
 				} else {
 					// If there's only one server, the main context menu item should be clickable
-					chrome.contextMenus.update(parentId, { "onclick": RTA.genericOnClick });
+					// (click handling is now done globally via chrome.contextMenus.onClicked)
 				}
 			}
 		});
@@ -180,12 +178,25 @@ RTA.genericOnClick = function (info, tab) {
 	var linkUrl = info.linkUrl;
 	console.log("[DEBUG] genericOnClick called, menuItemId:", info.menuItemId);
 
+	// Derive serverId directly from the menuItemId string so we do not depend on
+	// the ephemeral menuItemIndexToServerIndex array which is wiped on worker restart.
+	var serverId;
+	if (info.menuItemId === "send_to_all") {
+		serverId = -1;
+	} else if (info.menuItemId.startsWith("server-")) {
+		serverId = parseInt(info.menuItemId.substring(7), 10);
+	} else if (info.menuItemId === "rta_main_context") {
+		serverId = 0;
+	} else {
+		console.warn("[DEBUG] Unknown menuItemId:", info.menuItemId);
+		return;
+	}
+	console.log("[DEBUG] resolved serverId:", serverId);
+
 	var addTorrent = function () {
 		chrome.storage.local.get(["servers"], (result) => {
 			var servers = result.servers;
 			console.log("[DEBUG] servers from storage:", JSON.stringify(servers));
-			var serverId = menuItemIndexToServerIndex[info.menuItemId];
-			console.log("[DEBUG] serverId from menuItemIndexToServerIndex:", serverId);
 
 			if (serverId === -1) { // send to all servers
 				for (var i in servers) {
